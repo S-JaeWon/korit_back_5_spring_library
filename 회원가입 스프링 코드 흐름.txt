@@ -1,0 +1,4 @@
+회원가입 페이지 (프론트 서버) -> Axios로 Security로 json으로 변환 후 보냄 -> AuthController로 보낸 후 signup method로 dto로 변환 후 보냄 -> 받아온 dto은 정규식 -> signup 메소드 실행 전 @ValidAspect 실행 -> bindingResult로 가서 
+error (True/False) 유무 검사 -> error 있다면 erros들을 키와 값을 넣어(DTO변수명: 메세지내용) ErrorMap으로 변환 후 응답
+-> 서비스에서 중복체크 -> 회원가입 로직 -> 성공적으로 작동 됐다면 repository를 거쳐서 dto를 entity로 변환 후, password를 암호화 시켜서(BCrypt)  DB에 값 넣음(DTO는 Bean이 아니기에 SecurityConfig에서 BPE를 bean 등록후 Ioc에 등록, Dto는 Bean이 아니기에 Service에서 toentity를 매개변수로 보낸 후 암호화)
+
