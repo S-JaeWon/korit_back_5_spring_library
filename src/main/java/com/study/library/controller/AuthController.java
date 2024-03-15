@@ -2,6 +2,7 @@ package com.study.library.controller;
 
 import com.study.library.aop.annotation.ParamsPrintAspect;
 import com.study.library.aop.annotation.ValidAspect;
+import com.study.library.dto.SigninReqDto;
 import com.study.library.dto.SignupReqDto;
 import com.study.library.service.AuthService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -28,10 +29,11 @@ public class AuthController {
     public ResponseEntity<?> signup( // ReqDto를 Validation 체크 후 결과를 bindingResult에 담음
            @Valid @RequestBody SignupReqDto signupReqDto, BindingResult bindingResult
     ) {
-        if(authService.isDuplicatedByUsername(signupReqDto.getUsername())) { // username 중복체크
-            ObjectError objectError = new FieldError("username", "username", "이미 존재하는 사용자이름 입니다.");
-            bindingResult.addError(objectError);
-        }
+
+//        if(authService.isDuplicatedByUsername(signupReqDto.getUsername())) { // username 중복체크
+//            ObjectError objectError = new FieldError("username", "username", "이미 존재하는 사용자이름 입니다.");
+//            bindingResult.addError(objectError);
+//        }
 
 //          Aop로 빼서 쓰기
 //        if (bindingResult.hasErrors()) { // error가 있다면, 그 error들을 list로 가져옴
@@ -47,6 +49,12 @@ public class AuthController {
 
         authService.signup(signupReqDto);
         return ResponseEntity.created(null).body(true);
+    }
+
+    @PostMapping("/signin")
+    public ResponseEntity<?> signin (@RequestBody SigninReqDto signinReqDto) {
+
+        return ResponseEntity.ok(authService.signin(signinReqDto));
     }
 
 }

@@ -1,0 +1,2 @@
+https://mvnrepository.com/search?q=jjwt
+-> API, Impl, Jackson ver 11.5
