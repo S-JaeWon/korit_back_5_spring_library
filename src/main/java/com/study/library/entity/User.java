@@ -39,13 +39,13 @@ public class User {
                 .collect(Collectors.toList());
     }
 
-//    public PrincipalUser toPrincipalUser() {
-//        return PrincipalUser.builder()
-//                .userId(userId)
-//                .username(username)
-//                .name(name)
-//                .email(email)
-//                .authorities(getAuthorities())
-//                .build();
-//    }
+    public PrincipalUser toPrincipalUser() {
+        return PrincipalUser.builder()
+                .userId(userId)
+                .username(username)
+                .name(name)
+                .email(email)
+                .authorities(getAuthorities())
+                .build();
+    }
 }
