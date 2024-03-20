@@ -14,7 +14,7 @@ public class AccountController {
 
     @GetMapping("/principal")
     public ResponseEntity<?> getPrincipal() {
-        System.out.println("test");
+        // System.out.println("test");
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         PrincipalUser principalUser = (PrincipalUser) authentication.getPrincipal(); //principalUser 는 object 타입이므로 다운캐스팅
         return ResponseEntity.ok(principalUser);

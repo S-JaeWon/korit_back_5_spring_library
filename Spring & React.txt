@@ -1,4 +1,40 @@
-https://mvnrepository.com/artifact/org.springframework.boot/spring-boot-starter-security/3.2.3
+Signin
+	controller -> service -> service 속 find 메서드로 repositiory 호출 -> db 속 데이터 불러와서 토큰 생성 
+
+spring aop
+	https://mvnrepository.com/search?q=spring+boot+aop
+-> Spring Boot Starter AOP
+
+@Slf4j 
+
+spring smtp
+	https://mvnrepository.com/artifact/org.springframework.boot/spring-boot-starter-mail
+-> pom.xml 에서 붙여넣고 버전 지우기 
+-> apllication-secret ->   
+mail:
+    host:
+    port: 
+    username:
+    password:
+    protocol: 
+      mail.smtp.auth: true
+      mail.smtp.starttls.enable: true
+
+react query
+	npm i react-query
+
+index.js ->
+
+const QueryClient = new QueryClient();
+
+<QueryClientProvider client={QueryClient}>
+~~
+</QueryClientProvider>
+
+
+---------------------------------------------------------------------------------------------------------------------------
+spring security
+	https://mvnrepository.com/artifact/org.springframework.boot/spring-boot-starter-security/3.2.3
 
 WebSecurityConfigurerAdapter 상속(extends)
 
@@ -37,8 +73,5 @@ JWT-> 2와 3사이에 끼어넣어줌 -> 요청 들어올시 JWT 확인(토큰 �
 
 
 https://hello-judy-world.tistory.com/216
-
-
-
-
+---------------------------------------------------------------------------------------------------------------------------
 

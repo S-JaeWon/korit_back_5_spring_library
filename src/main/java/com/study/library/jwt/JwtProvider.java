@@ -65,15 +65,11 @@ public class JwtProvider { // Token을 만들어서 return
     public Claims getClaims(String token) {
         Claims claims = null;
 
-        try {
-            claims = Jwts.parserBuilder()
-                    .setSigningKey(key)
-                    .build()
-                    .parseClaimsJws(token) // 토큰을 Claim 으로 변환
-                    .getBody();
-        } catch (Exception e) {
-            log.error("JWT 인증 오류: {}", e.getMessage());
-        }
+        claims = Jwts.parserBuilder()
+                .setSigningKey(key)
+                .build()
+                .parseClaimsJws(token) // 토큰을 Claim 으로 변환
+                .getBody();
 
         return claims;
     }
@@ -86,5 +82,15 @@ public class JwtProvider { // Token을 만들어서 return
         }
         PrincipalUser principalUser = user.toPrincipalUser(); // principalUser로 Authortication 만들기
         return new UsernamePasswordAuthenticationToken(principalUser, principalUser.getPassword(), principalUser.getAuthorities());
+    }
+
+    public String generateAuthMailToken(int userId, String toMailAddress) { // address 값과 만료시간을 암호화한 정보가 담긴 토큰
+        Date expireDate = new Date(new Date().getTime() + (1000 * 60 * 5));
+        return Jwts.builder()
+                .claim("userId", userId)
+                .claim("toMailAddress", toMailAddress)
+                .setExpiration(expireDate)
+                .signWith(key, SignatureAlgorithm.HS256)
+                .compact();
     }
 }

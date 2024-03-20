@@ -40,6 +40,8 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
         http.authorizeRequests() // 요청이 들어올때 다음과 같은걸로 인증. http 객체 안에 빌더 패턴 사용
                 .antMatchers("/server/**", "/auth/**") // 다음과 같은 서버
                 .permitAll() // 무조건 승인
+                .antMatchers("/mail/authenticate")
+                .permitAll()
                 .anyRequest() // 나머지 모든 요청
                 .authenticated() // 인증 필요
                 .and()

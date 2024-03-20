@@ -1,1 +1,0 @@
-controller -> service -> service 속 find 메서드로 repositiory 호출 -> db 속 데이터 불러와서 토큰 생성 

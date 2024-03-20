@@ -38,7 +38,7 @@ public class AuthService {
         User user = signupReqDto.toEntity(passwordEncoder);
 
         successCount += userMapper.saveUser(user); // Dto를 Entity로 변환 후 넣어주기
-        successCount += userMapper.saveRole(user.getUserId());
+        successCount += userMapper.saveRole(user.getUserId(), 1);
 
         if(successCount < 2) {
             throw new SaveException();
