@@ -1,0 +1,4 @@
+SigninPage -> herf -> oauth2 (따로 백에서 Controller 만들지 않았지만 라이브러리에 내장되어있음)
+
+백서버의 securityConfig의 .userInfoEndpoint() 에서 토큰 검사
+-> service에서 성공적으로 작동하면 .successHandler(oAuth2SuccessHandler) 감 

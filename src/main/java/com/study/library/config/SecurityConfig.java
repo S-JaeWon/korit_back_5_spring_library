@@ -1,7 +1,10 @@
 package com.study.library.config;
 
+import com.study.library.sercurity.exception.AuthEntryPoint;
 import com.study.library.sercurity.filter.JwtAuthenticationFilter;
 import com.study.library.sercurity.filter.PermitAllFilter;
+import com.study.library.sercurity.handler.OAuth2SuccessHandler;
+import com.study.library.service.OAuth2PrincipalService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -9,7 +12,6 @@ import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
-import org.springframework.security.web.AuthenticationEntryPoint;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import org.springframework.security.web.authentication.logout.LogoutFilter;
 
@@ -24,8 +26,13 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     private JwtAuthenticationFilter jwtAuthenticationFilter;
 
     @Autowired
-    private AuthenticationEntryPoint authenticationEntryPoint;
+    private AuthEntryPoint authEntryPoint;
 
+    @Autowired
+    private OAuth2PrincipalService oAuth2PrincipalService;
+
+    @Autowired
+    private OAuth2SuccessHandler oAuth2SuccessHandler;
 
     @Bean
     public BCryptPasswordEncoder passwordEncoder() {
@@ -48,7 +55,13 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .addFilterAfter(permitAllFilter, LogoutFilter.class) // 1)
                 .addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class) // 2) (1)(2)filter 들을 거쳐야 antMatchers 부터 실행
                 .exceptionHandling()
-                .authenticationEntryPoint(authenticationEntryPoint);
+                .authenticationEntryPoint(authEntryPoint)
+                .and()
+                .oauth2Login()
+                .successHandler(oAuth2SuccessHandler) // 밑에서 검사 끝나면 여기로 보냄
+                // OAuth2로그인 토큰 검사
+                .userInfoEndpoint()
+                .userService(oAuth2PrincipalService);
 
         // 'server와 auth로 시작하는 서버의 요청은 무조건 승인, 이외는 인증 필요', 순서를 바꾸면 다른 뜻이 됨
 

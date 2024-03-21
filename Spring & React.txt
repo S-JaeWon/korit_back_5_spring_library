@@ -31,6 +31,22 @@ const QueryClient = new QueryClient();
 ~~
 </QueryClientProvider>
 
+OAuth2
+	https://mvnrepository.com/artifact/org.springframework.boot/spring-boot-starter-oauth2-client
+https://oauth.net/2/ 
+-> 개별 로그인에서 통합로그인으로 (sns로그인)
+
+Goolge: GCP(google cloud platform) 에서 설정 
+
+securityConfig에서 설정 추가 -> configure 에서 추가 -> OAuth2Service 생성
+				.and()
+				.oauth2Login()
+				.successHandler(null)
+				.userInfoEndpoint()
+				.userService(null);
+
+ 
+
 
 ---------------------------------------------------------------------------------------------------------------------------
 spring security

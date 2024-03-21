@@ -1,5 +1,6 @@
 package com.study.library.aop;
 
+import com.study.library.dto.OAuth2SignupReqDto;
 import com.study.library.dto.SignupReqDto;
 import com.study.library.exception.ValidException;
 import com.study.library.repository.UserMapper;
@@ -60,6 +61,21 @@ public class ValidAop {
 
         }
 
+        if(methodName.equals("oAuth2Signup")) {
+            OAuth2SignupReqDto oAuth2SignupReqDto = null;
+
+            for(Object arg : args) {
+                if(arg.getClass() == OAuth2SignupReqDto.class) {
+                    oAuth2SignupReqDto = (OAuth2SignupReqDto) arg;
+                }
+            }
+
+            if(userMapper.findUserByUsername(oAuth2SignupReqDto.getUsername()) != null) {
+                ObjectError objectError = new FieldError("username", "username", "이미 존재하는 사용자 이름입니다.");
+                bindingResult.addError(objectError);
+            }
+        }
+
         if (bindingResult.hasErrors()) { // error가 있다면, 그 error들을 list로 가져옴
             List<FieldError> fieldErrors = bindingResult.getFieldErrors();
             Map<String, String> errorMap = new HashMap<>();
@@ -71,8 +87,8 @@ public class ValidAop {
 //            return ResponseEntity.badRequest().body(errorMap); Advice에서 대신 해줌
             throw new ValidException(errorMap);
         }
-
         return proceedingJoinPoint.proceed();
-
     }
+
+
 }
