@@ -20,18 +20,25 @@ public class OAuth2PrincipalService implements OAuth2UserService {
 
         Map<String, Object> attributes = oAuth2User.getAttributes(); // Map으로 유저정보들이 담겨 있음
 
+        System.out.println(attributes); // id 값 확인
+
         String provider = userRequest.getClientRegistration().getClientName(); // Google, Kakao, Naver <- ClientName에 들어감
         Map<String, Object> newAttributes = null;
+        String id = null;
         switch (provider) {
             case "Google":
-                String id = attributes.get("sub").toString();
-                newAttributes = Map.of("id", id, "provider", provider);
+                id = attributes.get("sub").toString();
                 break;
-            case "Naver":
+            case "Naver": // id가 맵 안에 response(Map)에 있음.
+                Map<String, Object> response = (Map<String, Object>) attributes.get("response");
+                id = response.get("id").toString();
                 break;
             case "Kakao":
+                id = attributes.get("id").toString();
                 break;
         }
+        newAttributes = Map.of("id", id, "provider", provider);
+
 
 
         return new DefaultOAuth2User(oAuth2User.getAuthorities(), newAttributes, "id");

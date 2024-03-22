@@ -14,4 +14,5 @@ public interface UserMapper {
     public int saveRole(@Param("userId") int userId, @Param("roleId") int roleId); //user.xml에서 value 값과 동일하게 @Param
     public User findUserByOAuth2name(String oAuth2name);
     public int saveOAuth2(OAuth2 oAuth2);
+    public int modifyPassword(User user);
 }

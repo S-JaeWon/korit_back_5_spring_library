@@ -1,8 +1,10 @@
 package com.study.library.service;
 
+import com.study.library.dto.OAuth2MergeReqDto;
 import com.study.library.dto.OAuth2SignupReqDto;
 import com.study.library.dto.SigninReqDto;
 import com.study.library.dto.SignupReqDto;
+import com.study.library.entity.OAuth2;
 import com.study.library.entity.User;
 import com.study.library.exception.SaveException;
 import com.study.library.jwt.JwtProvider;
@@ -46,7 +48,7 @@ public class AuthService {
         }
     }
     @Transactional(rollbackFor = Exception.class) // 예외 하나라도 생기면 무조건 롤백
-    public void oAuthSignup(OAuth2SignupReqDto oAuth2SignupReqDto) {
+    public void oAuth2Signup(OAuth2SignupReqDto oAuth2SignupReqDto) {
         int successCount = 0;
 
         User user = oAuth2SignupReqDto.toEntity(passwordEncoder);
@@ -73,6 +75,25 @@ public class AuthService {
 
 
         return jwtProvider.generateToken(user);
+    }
+
+    public void oAuth2Merge(OAuth2MergeReqDto oAuth2MergeReqDto) {
+        User user = userMapper.findUserByUsername(oAuth2MergeReqDto.getUsername());
+
+        if(user == null) {
+            throw new UsernameNotFoundException/*아이디 불일치*/("사용자 정보를 확인할 수 없습니다.");
+        }
+
+        if (!passwordEncoder.matches(oAuth2MergeReqDto.getPassword(), user.getPassword())) {
+            throw new BadCredentialsException/*비밀번호 불일치*/("사용자 정보를 확인할 수 없습니다.");
+        }
+        OAuth2 oAuth2 = OAuth2.builder()
+                .oAuth2Name(oAuth2MergeReqDto.getOauth2Name())
+                .userId(user.getUserId())
+                .providerName(oAuth2MergeReqDto.getProviderName())
+                .build();
+
+        userMapper.saveOAuth2(oAuth2);
     }
 
 }
