@@ -1,0 +1,100 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.study.library.repository.BookMapper">
+    <resultMap id="BookTypeResultMap" type="com.study.library.entity.BookType">
+        <id property="bookTypeId" column="book_type_id"/>
+        <result property="bookTypeName" column="book_type_name"/>
+        <result property="createDate" column="create_date"/>
+        <result property="updateDate" column="update_date"/>
+    </resultMap>
+    <resultMap id="CategoryResultMap" type="com.study.library.entity.Category">
+        <id property="categoryId" column="category_id"/>
+        <result property="categoryName" column="category_name"/>
+        <result property="createDate" column="create_date"/>
+        <result property="updateDate" column="update_date"/>
+    </resultMap>
+    <resultMap id="BookResultMap" type="com.study.library.entity.Book">
+        <id property="bookId" column="book_id"/>
+        <result property="bookName" column="book_name"/>
+        <result property="authorName" column="author_name"/>
+        <result property="publisherName" column="publisher_name"/>
+        <result property="isbn" column="isbn"/>
+        <result property="bookTypeId" column="book_type_id"/>
+        <result property="categoryId" column="category_id"/>
+        <result property="coverImgUrl" column="cover_img_url"/>
+        <result property="createDate" column="create_date"/>
+        <result property="updateDate" column="update_date"/>
+        <association property="bookType" resultMap="BookTypeResultMap" />
+        <association property="category" resultMap="CategoryResultMap" />
+    </resultMap>
+
+    <insert id="saveBook" parameterType="com.study.library.entity.Book">
+        insert into book_tb
+        values(
+        0,
+        #{bookName},
+        #{authorName},
+        #{publisherName},
+        #{isbn},
+        #{bookTypeId},
+        #{categoryId},
+        #{coverImgUrl},
+        now(),
+        now()
+        )
+    </insert>
+    <select id="findBooks" resultMap="BookTypeResultMap">
+        select
+            bt.book_id,
+            bt.book_name,
+            bt.author_name,
+            bt.publisher_name,
+            bt.isbn,
+            bt.book_type_id,
+            btt.book_type_name,
+            bt.category_id,
+            ct.category_name,
+            bt.cover_img_url,
+            bt.create_date,
+            bt.update_date
+        from
+            book_tb bt
+            left outer join book_type_tb btt on(btt.book_type_id = bt.book_type_id)
+            left outer join category_tb ct on(ct.category_id = bt.category_id)
+        where
+            1 = 1 <!-- 전체 조회 -->
+            <if test="bookTypeId != 0">
+                and bt.book_type_id = #{bookTypeId}
+            </if>
+            <if test="categoryId != 0">
+                and bt.category_id = #{categoryId}
+            </if>
+            <choose> <!-- 조건달기 -->
+                <when test="searchTypeId == 0">
+                    and(
+                        bt.book_name like concat('%', #{searchText}, '%')
+                        or bt.author_name like concat('%', #{searchText}, '%')
+                        or bt.publisher_name like concat('%', #{searchText}, '%')
+                        or bt.isbn like concat('%', #{searchText}, '%')
+                    )
+                </when>
+                <when test="searchTypeId == 1">
+                    and bt.book_name like concat('%', #{searchText}, '%')
+                </when>
+                <when test="searchTypeId == 2">
+                    and bt.author_name like concat('%', #{searchText}, '%')
+                </when>
+                <when test="searchTypeId == 3">
+                    and bt.publisher_name like concat('%', #{searchText}, '%')
+                </when>
+                <when test="searchTypeId == 4">
+                    and bt.isbn like concat('%', #{searchText}, '%')
+                </when>
+            </choose>
+        limit
+            #{startIndex}, #{count}
+    </select>
+</mapper>
