@@ -1,6 +1,7 @@
 package com.study.library.service;
 
 import com.study.library.dto.RegisterBookReqDto;
+import com.study.library.dto.SearchBookCountRespDto;
 import com.study.library.dto.SearchBookReqDto;
 import com.study.library.dto.SearchBookRespDto;
 import com.study.library.entity.Book;
@@ -32,7 +33,21 @@ public class BookService {
                 searchBookReqDto.getSearchTypeId(),
                 searchBookReqDto.getSearchText()
         );
-
         return books.stream().map(Book::toSearchBookRespDto).collect(Collectors.toList());
+    }
+
+    public SearchBookCountRespDto getBookCount(SearchBookReqDto searchBookReqDto) {
+        int bookCount = bookMapper.getBookCount(
+                searchBookReqDto.getBookTypeId(),
+                searchBookReqDto.getCategoryId(),
+                searchBookReqDto.getSearchTypeId(),
+                searchBookReqDto.getSearchText()
+        );
+        int maxPageNumber = (int)Math.ceil/*올림*/(((double) bookCount) / searchBookReqDto.getCount()); //()안에 자료형 넣으면 형변환 -> 명시적 형변환
+        // 20개의 게시물을 보여주는 게시판에서 61개 조회시, 60 / 20 = 3.~~~ 이므로 올림해서 페이지 4개 생성
+        return SearchBookCountRespDto.builder()
+                .totalCount(bookCount)
+                .maxPageNumber(maxPageNumber)
+                .build();
     }
 }

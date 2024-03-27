@@ -32,21 +32,22 @@
     </resultMap>
 
     <insert id="saveBook" parameterType="com.study.library.entity.Book">
-        insert into book_tb
+        insert
+            into book_tb
         values(
-        0,
-        #{bookName},
-        #{authorName},
-        #{publisherName},
-        #{isbn},
-        #{bookTypeId},
-        #{categoryId},
-        #{coverImgUrl},
-        now(),
-        now()
+            0,
+            #{bookName},
+            #{authorName},
+            #{publisherName},
+            #{isbn},
+            #{bookTypeId},
+            #{categoryId},
+            #{coverImgUrl},
+            now(),
+            now()
         )
     </insert>
-    <select id="findBooks" resultMap="BookTypeResultMap">
+    <select id="findBooks" resultMap="BookResultMap">
         select
             bt.book_id,
             bt.book_name,
@@ -75,10 +76,10 @@
             <choose> <!-- 조건달기 -->
                 <when test="searchTypeId == 0">
                     and(
-                        bt.book_name like concat('%', #{searchText}, '%')
-                        or bt.author_name like concat('%', #{searchText}, '%')
-                        or bt.publisher_name like concat('%', #{searchText}, '%')
-                        or bt.isbn like concat('%', #{searchText}, '%')
+                    bt.book_name like concat('%', #{searchText}, '%')
+                    or bt.author_name like concat('%', #{searchText}, '%')
+                    or bt.publisher_name like concat('%', #{searchText}, '%')
+                    or bt.isbn like concat('%', #{searchText}, '%')
                     )
                 </when>
                 <when test="searchTypeId == 1">
@@ -96,5 +97,44 @@
             </choose>
         limit
             #{startIndex}, #{count}
+    </select>
+
+    <select id="getBookCount" resultType="integer">
+        select
+            count(*) <!-- 검색한 결과만큼 조회 -->
+        from
+            book_tb bt
+            left outer join book_type_tb btt on(btt.book_type_id = bt.book_type_id)
+            left outer join category_tb ct on(ct.category_id = bt.category_id)
+        where
+            1 = 1
+            <if test="bookTypeId != 0">
+                and bt.book_type_id = #{bookTypeId}
+            </if>
+            <if test="categoryId != 0">
+                and bt.category_id = #{categoryId}
+            </if>
+            <choose> <!-- 조건달기 -->
+                <when test="searchTypeId == 0">
+                    and(
+                    bt.book_name like concat('%', #{searchText}, '%')
+                    or bt.author_name like concat('%', #{searchText}, '%')
+                    or bt.publisher_name like concat('%', #{searchText}, '%')
+                    or bt.isbn like concat('%', #{searchText}, '%')
+                    )
+                </when>
+                <when test="searchTypeId == 1">
+                    and bt.book_name like concat('%', #{searchText}, '%')
+                </when>
+                <when test="searchTypeId == 2">
+                    and bt.author_name like concat('%', #{searchText}, '%')
+                </when>
+                <when test="searchTypeId == 3">
+                    and bt.publisher_name like concat('%', #{searchText}, '%')
+                </when>
+                <when test="searchTypeId == 4">
+                    and bt.isbn like concat('%', #{searchText}, '%')
+                </when>
+            </choose>
     </select>
 </mapper>
