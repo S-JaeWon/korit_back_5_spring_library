@@ -137,4 +137,32 @@
                 </when>
             </choose>
     </select>
+
+    <delete id="deleteBooksByBookIds" parameterType="list">
+        delete
+        from
+            book_tb
+        where
+            book_id in (
+                <foreach collection="bookIds" item="bookId" separator=",">
+                    #{bookId}
+                </foreach>
+            )
+    </delete>
+
+    <update id="updateBookByBookId" parameterType="com.study.library.entity.Book">
+        update
+            book_tb
+        set
+            book_name = #{bookName},
+            author_name = #{authorName},
+            publisher_name = #{publisherName},
+            isbn = #{isbn},
+            book_type_id = #{bookTypeId},
+            category_id = #{categoryId},
+            cover_img_url = #{coverImgUrl},
+            update_date = now()
+        where
+            book_id = #{bookId}
+    </update>
 </mapper>

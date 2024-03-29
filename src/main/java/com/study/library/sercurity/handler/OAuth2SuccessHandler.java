@@ -38,7 +38,7 @@ public class OAuth2SuccessHandler implements AuthenticationSuccessHandler {
             DefaultOAuth2User oAuth2User = (DefaultOAuth2User) authentication.getPrincipal();
             String providerName = oAuth2User.getAttribute("provider").toString();
 
-            // 8080서버에서 3000서버로 넘어옴
+            // 8080서버(스프링)에서 3000서버(리액트)로 넘어옴
             response.sendRedirect("http://" + clientAddress + "/auth/oauth2?name=" + name + "&provider=" + providerName);
             return;
         }
